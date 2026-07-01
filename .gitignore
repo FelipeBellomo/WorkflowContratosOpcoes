@@ -1,0 +1,24 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# --- Arquivos de Dados e Resultados (Locais) ---
+# Ignora arquivos de dados históricos e relatórios pesados/temporários
+COTAHIST_*.TXT
+cotahist_preview_*.txt
+parsed_stats_*.json
+sample_*.json
+top_opcoes_*.json
+
+# Se quiser ignorar TODOS os arquivos JSON e TXT de dados automaticamente,
+# você pode descomentar as linhas abaixo (basta apagar a '#' delas):
+# *.json
+# *.txt
+
+# --- Configurações de IDEs ---
+.vscode/
+.idea/

@@ -1,0 +1,46 @@
+name: B3 Diario Quant
+
+on:
+  # Permite que você clique num botão para testar a qualquer hora
+  workflow_dispatch: 
+  # O Despertador: Roda de seg a sex às 22h00 UTC (19h00 Brasil)
+  schedule:
+    - cron: '0 22 * * 1-5'
+
+# Dá permissão para o robô poder escrever no repositório
+permissions:
+  contents: write
+
+jobs:
+  gerar-dados:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: 2. Preparar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 3. Instalar bibliotecas matemáticas
+        run: pip install -r requirements.txt
+
+      - name: 4. Rodar o Cérebro (Extração B3 + Black-Scholes)
+        run: python gerador_universo.py
+
+      - name: 5. Salvar o JSON de volta no GitHub (Git Commit)
+        run: |
+          # Avisa o Git quem está fazendo a modificação
+          git config --local user.email "action@github.com"
+          git config --local user.name "Robô Quant B3"
+          
+          # Adiciona o JSON novo que o Python gerou
+          git add top_opcoes_d1.json
+          
+          # Tenta commitar. O '|| true' impede o robô de dar erro se o JSON for idêntico ao de ontem (ex: feriado)
+          git commit -m "🤖 Update Quant: Parâmetros D-1 [skip ci]" || true
+          
+          # Empurra de volta para o seu repositório público!
+          git push

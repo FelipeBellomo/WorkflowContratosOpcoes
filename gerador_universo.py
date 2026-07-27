@@ -399,13 +399,19 @@ def main() -> None:
 
     for r in top60:
         subjacente_preco = spot_map.get(r.ativo_mae)
+        # Piso virtual de tempo para evitar explosões de Gamma em opções muito próximas do vencimento.
+        if r.dias_uteis is not None and r.dias_uteis <= 5:
+            T_calculo = 7.0 / 252.0
+        else:
+            T_calculo = r.T
+
         p = calcular_p_otimo(
             r.ticker,
             r.preco_fechamento,
             r.strike,
             r.ativo_objeto,
             subjacente_preco,
-            r.T,
+            T_calculo,
             r.sigma,
         )
         output.append({
